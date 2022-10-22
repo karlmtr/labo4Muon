@@ -18,4 +18,12 @@ from pymuon.equations.bethe_bloch_equation import BetheBlochEquation
 available_equations.append(BetheBlochEquation)
 
 
-__all__ = available_formulae + available_equations
+from pymuon.elements.element import Element
+
+available_simulations = []
+
+from pymuon.layers.single_layer import SingleLayer
+
+
+__all__ = (available_formulae + available_equations + [Element]
+           + available_simulations)

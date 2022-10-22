@@ -12,7 +12,7 @@ setuptools.setup(
     description="Muon Attenuation Simulation",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    license='WTFPL',
+    license='Apache License 2.0',
     include_package_data=True,	# controls whether non-code files are copied when package is installed
     install_requires=["scipy", "numpy", "matplotlib"],
     classifiers=[

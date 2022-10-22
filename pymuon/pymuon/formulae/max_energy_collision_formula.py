@@ -23,7 +23,7 @@ class MaxEnergyCollisionFormula():
     def calc_max_energy_collision(mass, rel_velocity):
 
         lorentz_factor = calc_lorentz_factor(rel_velocity)
-        num = 2*m_e*(c**2)*(rel_velocity**2)*(lorentz_factor**2)
+        num = 2*m_e*(rel_velocity**2)*(lorentz_factor**2)
         den = 1  + (2*lorentz_factor*m_e/mass) + ((m_e/mass)**2)
 
         return num / den

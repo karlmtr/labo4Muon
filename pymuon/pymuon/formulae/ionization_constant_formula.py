@@ -14,10 +14,10 @@ class IonizationConstantFormula():
     def calc_ionization_constant(atomic_number):
         if (atomic_number < 13):
 
-            return 12 + (7/atomic_number)
+            return atomic_number * (12 + (7/atomic_number))
         else:
 
-            return 9.76 + (58.8 * atomic_number**(-1.19))
+            return atomic_number * (9.76 + (58.8 * atomic_number**(-1.19)))
 
 
 

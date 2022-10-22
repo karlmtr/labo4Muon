@@ -1,5 +1,7 @@
 """.. moduleauthor:: Sacha Medaer"""
 
+import math
+
 import numpy as np
 
 

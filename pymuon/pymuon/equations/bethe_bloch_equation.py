@@ -82,13 +82,14 @@ class BetheBlochEquation():
         """
         lorentz_factor = calc_lorentz_factor(rel_velocity)
         ionization_cst = calc_ionization_constant(self._atomic_number)
+        ionization_cst *= 1e-6   # eV -> MeV
         max_energy = calc_max_energy_collision(self._particle_mass,
                                                rel_velocity)
 
         first_term = ((CONSTANTE_K*self._atomic_number*(self._elec_charge**2))
                       / (self._mass_number*(rel_velocity**2)))
 
-        ln_term = 0.5 * np.log((2*m_e*(c**2)*(rel_velocity**2)
+        ln_term = 0.5 * np.log((2*m_e*(rel_velocity**2)
                                 *(lorentz_factor**2)*max_energy)
                                / (ionization_cst**2))
 
@@ -103,7 +104,7 @@ class BetheBlochEquation():
         second_term = (ln_term - (rel_velocity**2) - (density_corr/2.0))
 
 
-        return first_term * second_term * self._density
+        return self._density * first_term * second_term
 
 
 if __name__ == "__main__":
