@@ -13,6 +13,7 @@ symbols = ['Pb', 'Cu', 'Fe', 'He']
 e_muon = -1
 m_muon = physical_constants['muon mass energy equivalent in MeV'][0]   # MeV/c^2
 
+
 fig, ax1 = plt.subplots()
 x = 3e-0    # cm
 p_muon  = 100.  # MeV

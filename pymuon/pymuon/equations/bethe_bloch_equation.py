@@ -5,15 +5,12 @@ from scipy.constants import physical_constants, c
 m_e = physical_constants['electron mass energy equivalent in MeV'][0]   # MeV
 
 from pymuon.formulae.lorentz_factor_formula import LorentzFactorFormula
-from pymuon.formulae.ionization_constant_formula import \
-    IonizationConstantFormula
 from pymuon.formulae.max_energy_collision_formula import \
     MaxEnergyCollisionFormula
 
 
 # Define local methods
 calc_lorentz_factor = LorentzFactorFormula.calc_lorentz_factor
-calc_ionization_constant = IonizationConstantFormula.calc_ionization_constant
 calc_max_energy_collision = MaxEnergyCollisionFormula.calc_max_energy_collision
 
 # Constants should be place in dedicated folder constants under utils
@@ -26,8 +23,8 @@ class BetheBlochEquation():
     equations. See 'Particle et Noyaux' for more details.
     """
 
-    def __init__(self, elec_charge, particle_mass, mass_number, atomic_number,
-                 density, charge_density_corr=None) -> None:
+    def __init__(self, elec_charge, particle_mass, material,
+                 charge_density_corr=None) -> None:
         """
         The equation is intended to be used for a given medium and
         incident particle. Thus the fixed parameters are given in the
@@ -37,14 +34,12 @@ class BetheBlochEquation():
 
         Parameters
         ----------
-        mass_number :
-            The mass number of the incident particle
-        atomic_number :
-            The atomic number of the incident particle
         elec_charge :
             The electric charge of the incident particle
         particle_mass :
             The mass of the incident particle
+        material :
+            The target material.
         charge_density_corr :
             The correction for the saturating effects of the charge
             density
@@ -52,9 +47,11 @@ class BetheBlochEquation():
         """
         self._elec_charge = elec_charge
         self._particle_mass = particle_mass
-        self._mass_number = mass_number
-        self._atomic_number = atomic_number
-        self._density = density
+        self._material = material
+        self._mass_number = material.mass_number
+        self._atomic_number = material.atomic_number
+        self._density = material.density
+        self._ionization_cst = material.ionization_cst
         self._charge_density_corr = charge_density_corr
 
         return None
@@ -81,8 +78,6 @@ class BetheBlochEquation():
 
         """
         lorentz_factor = calc_lorentz_factor(rel_velocity)
-        ionization_cst = calc_ionization_constant(self._atomic_number)
-        ionization_cst *= 1e-6   # eV -> MeV
         max_energy = calc_max_energy_collision(self._particle_mass,
                                                rel_velocity)
 
@@ -91,7 +86,7 @@ class BetheBlochEquation():
 
         ln_term = 0.5 * np.log((2*m_e*(rel_velocity**2)
                                 *(lorentz_factor**2)*max_energy)
-                               / (ionization_cst**2))
+                               / (self._ionization_cst**2))
 
         density_corr = 0.
         if (self._charge_density_corr is not None):

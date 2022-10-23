@@ -2,13 +2,16 @@
 
 from mendeleev import element
 
+from pymuon.elements.abstract_element import AbstractElement
+from pymuon.formulae.ionization_cst_formula import IonizationCstFormula
+
 
 # Exceptions
 class ElementInputError(Exception):
     pass
 
 
-class Element():
+class Element(AbstractElement):
     """This class contains the element properties. Currently, it acts
     as an custom API of the mendeleev python library.
     """
@@ -35,16 +38,21 @@ class Element():
             return False
 
     @property
-    def atomic_number(self) -> int:
+    def atomic_number(self) -> float:
 
         return self._elem.atomic_number
 
     @property
-    def mass_number(self) -> int:
+    def mass_number(self) -> float:
 
         return self._elem.mass_number
 
     @property
-    def density(self) -> int:
+    def density(self) -> float:
 
         return self._elem.density
+
+    @property
+    def ionization_cst(self) -> float:
+
+        return IonizationCstFormula.calc_ionization_cst(self.atomic_number)
