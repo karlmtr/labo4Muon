@@ -71,10 +71,7 @@ class MultiLayers():
                 points_per_layer[-1] += 1
             else:
                 points_per_layer[-1] -= 1
-
-        print(fractions)
-        print(points_per_layer)
-
+        # Initiating the calculation of attenuation
         res = np.zeros([])
         xs = np.zeros([])
         for i, layer in enumerate(self._layers):
@@ -82,11 +79,11 @@ class MultiLayers():
                 crt_particle_kin_energy = res[-1]
             else:
                 crt_particle_kin_energy = particle_kin_energy
-            print('crt EN : ', crt_particle_kin_energy)
             crt_res = layer.calc_attenuation(crt_particle_kin_energy,
                                              particle_charge, particle_mass,
                                              points_per_layer[i],
                                              return_xs, log_xs)
+            # Stack new results to previous results
             if (i):
                 if (return_xs):
                     res =  np.hstack((res, crt_res[0]))
@@ -99,7 +96,7 @@ class MultiLayers():
                     xs = crt_res[1]
                 else:
                     res = crt_res
-
+        # Return results
         if (return_xs):
 
             return res, xs

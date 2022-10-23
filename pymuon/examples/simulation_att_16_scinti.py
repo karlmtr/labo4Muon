@@ -33,8 +33,6 @@ fig, ax1 = plt.subplots()
 nbr_points = 10000
 
 for en in en_muon:
-    #particle_kin_energy = util.momentum_to_kin_energy(p, m_muon)
-    #print('Particle Initial Kinetic Energy: ', particle_kin_energy, ' MeV')
     layers = []
     for elem in layer_sequence:
         layers.append(SingleLayer(media[elem[0]], elem[1]))
