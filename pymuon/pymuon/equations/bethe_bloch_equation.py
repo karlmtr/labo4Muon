@@ -23,7 +23,7 @@ class BetheBlochEquation():
     equations. See 'Particle et Noyaux' for more details.
     """
 
-    def __init__(self, elec_charge, particle_mass, material,
+    def __init__(self, elec_charge, particle_mass, medium,
                  charge_density_corr=None) -> None:
         """
         The equation is intended to be used for a given medium and
@@ -38,8 +38,8 @@ class BetheBlochEquation():
             The electric charge of the incident particle
         particle_mass :
             The mass of the incident particle
-        material :
-            The target material.
+        medium :
+            The target medium.
         charge_density_corr :
             The correction for the saturating effects of the charge
             density
@@ -47,11 +47,11 @@ class BetheBlochEquation():
         """
         self._elec_charge = elec_charge
         self._particle_mass = particle_mass
-        self._material = material
-        self._mass_number = material.mass_number
-        self._atomic_number = material.atomic_number
-        self._density = material.density
-        self._ionization_cst = material.ionization_cst
+        self._medium = medium
+        self._mass_number = medium.mass_number
+        self._atomic_number = medium.atomic_number
+        self._density = medium.density
+        self._ionization_cst = medium.ionization_cst
         self._charge_density_corr = charge_density_corr
 
         return None
@@ -100,46 +100,3 @@ class BetheBlochEquation():
 
 
         return self._density * first_term * second_term
-
-
-if __name__ == "__main__":
-    """This code snippet shows the usage of the class.
-    """
-
-    import matplotlib.pyplot as plt
-    import numpy as np
-    from scipy.constants import physical_constants, c
-
-    from pymuon.formulae.lorentz_factor_formula import LorentzFactorFormula
-
-    # For Fe -> our project
-    Fe_A = 55.845
-    Fe_Z = 26
-    Fe_density = 7.874 # g/cm^3
-    # For Cu -> often cited as example
-    Cu_A = 63.546
-    Cu_Z = 29
-    Cu_density = 8.96 # g/cm^3
-    # For muon
-    e_muon = -1
-    m_muon = physical_constants['muon mass energy equivalent in MeV'][0]   # MeV/c^2
-
-    bb_eq = BetheBlochEquation(e_muon, m_muon, Cu_A, Cu_Z, Cu_density)
-
-    betas = np.logspace(-1, 0, int(1e3), False)
-    neg_atts = bb_eq(betas)
-
-    gammas = LorentzFactorFormula.calc_lorentz_factor(betas)
-
-    fig, ax1 = plt.subplots()
-
-    ax1.plot(betas*gammas, neg_atts)
-    plt.title("Mean Energy Loss as a function of the Relativistic Velocity",
-              size=25)
-    ax1.set_xlabel(r"Velocity $\beta\gamma$", size=20)
-    ax1.set_ylabel(r"$-\langle \frac{dE}{dx}\rangle$ (MeV/cm)",
-                   size=20)
-    ax1.set_xscale('log')
-    ax1.set_yscale('log')
-
-    plt.show()

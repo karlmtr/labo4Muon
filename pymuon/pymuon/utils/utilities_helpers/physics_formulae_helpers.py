@@ -5,6 +5,33 @@ import math
 import numpy as np
 
 
+'''
+# Non-relativistic
+
+def kin_energy_to_rel_velocity(kin_energy, mass):
+    """Convert the kinetic energy to the relativistic velocity."""
+
+    if (isinstance(kin_energy, float) or isinstance(kin_energy, int)):
+
+        return math.sqrt(2*kin_energy/mass)
+
+    else:
+
+        return np.sqrt(2*kin_energy/mass)
+
+def rel_velocity_to_kin_energy(rel_velocity, mass):
+    """Convert the relativistic velocity to the kinetic energy."""
+
+    if (isinstance(rel_velocity, float) or isinstance(rel_velocity, int)):
+
+        return mass*(rel_velocity**2)/2.0
+
+    else:
+
+        return mass*np.square(rel_velocity)/2.0
+'''
+
+
 def kin_energy_to_momemtum(kin_energy, mass):
     """Convert kinetic energy to momentum."""
 
@@ -34,19 +61,20 @@ def kin_energy_to_rel_velocity(kin_energy, mass):
 
     if (isinstance(kin_energy, float) or isinstance(kin_energy, int)):
 
-        return math.sqrt(2*kin_energy/mass)
+        return math.sqrt(1 - (1/((kin_energy/mass)+1)))
 
     else:
 
-        return np.sqrt(2*kin_energy/mass)
+        return np.sqrt(1 - (1/((kin_energy/mass)+1)))
+
 
 def rel_velocity_to_kin_energy(rel_velocity, mass):
     """Convert the relativistic velocity to the kinetic energy."""
 
     if (isinstance(rel_velocity, float) or isinstance(rel_velocity, int)):
 
-        return mass*(rel_velocity**2)/2.0
+        return mass * ((1/math.sqrt(1-(rel_velocity**2))) - 1)
 
     else:
 
-        return mass*np.square(rel_velocity)/2.0
+        return mass * ((1/np.sqrt(1-np.square(rel_velocity))) - 1)

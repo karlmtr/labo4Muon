@@ -25,8 +25,10 @@ from pymuon.elements.compound import Compound
 available_elements.append(Compound)
 
 available_simulations = []
-
 from pymuon.layers.single_layer import SingleLayer
+available_simulations.append(SingleLayer)
+from pymuon.layers.multi_layers import MultiLayers
+available_simulations.append(MultiLayers)
 
 
 __all__ = (available_formulae + available_equations + available_elements

@@ -17,30 +17,33 @@ class SingleLayer():
     medium.
     """
 
-    def __init__(self, medium_symbol, thickness) -> None:
+    def __init__(self, medium, thickness) -> None:
         """
         Parameters
         ----------
-        medium_symbol :
-            The symbol of the considered medium.
+        medium :
+            The medium.
         thickness :
-            The thickness of a the material. [cm]
+            The thickness of a the medium. [cm]
 
         N.B.: TO DO: find database for particle as for element and take
         as input the particle symbol
         """
-        self._medium_symbol = medium_symbol
-        self._medium_elem = Element(medium_symbol)
+        self._medium_elem = medium
         self._thickness = thickness
 
         return None
+
+    @property
+    def thickness(self) -> float:
+
+        return self._thickness
 
     def calc_attenuation(self, particle_kin_energy: float,
                          particle_charge: float, particle_mass: float,
                          nbr_points: int = int(1e3), return_xs: bool = False,
                          log_xs: bool = True) -> np.ndarray:
-        """Simulate the mean energy loss through a given thickness x
-        of material.
+        """Simulate the mean energy loss through a single layer.
 
         Parameters:
         -----------
@@ -54,26 +57,25 @@ class SingleLayer():
 
         """
         # Initializing Bethe-Bloch
-        bethe_bloch = BetheBlochEquation(particle_charge,
-                                         particle_mass,
-                                         self._medium_elem.mass_number,
-                                         self._medium_elem.atomic_number,
-                                         self._medium_elem.density)
+        bethe_bloch = BetheBlochEquation(particle_charge, particle_mass,
+                                         self._medium_elem)
         # Initializing distance grid
-        xs, step = np.linspace(0, self._thickness, nbr_points, True, True)
+        xs, step = np.linspace(0., self._thickness, nbr_points, False, True)
+        xs += step
         res = np.zeros_like(xs)
-        res[0] = particle_kin_energy
-        i = 1
-        while ((res[i-1] > 0) and (i < nbr_points)):
+        last_kin_energy = particle_kin_energy
+        i = 0
+        while ((last_kin_energy > 0) and (i < nbr_points)):
             # Calculate lorentz factor
-            rel_velocity = util.kin_energy_to_rel_velocity(res[i-1],
+            rel_velocity = util.kin_energy_to_rel_velocity(last_kin_energy,
                                                            particle_mass)
             # Calculate mean attenutaion at the current velocity
             mean_att = bethe_bloch(rel_velocity)
             # Calculate new eneregy at the given distance point
-            crt_en = res[i-1] - (mean_att * step)
-            res[i] = crt_en if (crt_en > 0) else 0.
-            # Update counter
+            crt_kin_energy = last_kin_energy - (mean_att * step)
+            res[i] = crt_kin_energy if (crt_kin_energy > 0) else 0.
+            # Update counter and var
+            last_kin_energy = res[i]
             i += 1
 
         if (return_xs):
