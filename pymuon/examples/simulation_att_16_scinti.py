@@ -21,12 +21,14 @@ color_media = {'Fe': 'orange', 'Air': 'gray', 'Sci': 'silver'}
 layer_sequence = [('Air', 10.0), ('Sci', 2.5)]
 layer_sequence *= 16
 
-l#ayer_sequence = [('Fe', 3.0)] + layer_sequence
+layer_sequence = [('Fe', 5.0)] + layer_sequence
+
+#layer_sequence = [('Fe', 3.0)] + layer_sequence
 
 # For muon
 e_muon = -1
 m_muon = physical_constants['muon mass energy equivalent in MeV'][0]   # MeV/c^2
-en_muon  = [25., 50., 75., 100., 200., 300.]  # MeV
+en_muon  = [100, 125, 150, 175, 200, 300]  # MeV
 
 fig, ax1 = plt.subplots()
 
@@ -45,7 +47,7 @@ for en in en_muon:
     xs = np.hstack((np.zeros(1), xs))
     atts = np.hstack((np.array([en]), atts))
 
-    ax1.plot(xs, atts, label='Muon with {} MeV initial kin. energy'.format(en))
+    ax1.plot(xs, atts, label=r'$E_{kin}^{init}$ =' + r' {} MeV'.format(en))
 
 # Add color for different media
 start = 0
@@ -62,9 +64,9 @@ for i, elem in enumerate(layer_sequence):
 
 # Plot and plot paremeters
 ax1.legend(fontsize=20)
-plt.title("Kinetic Energy as a function of the Material and Material Depth",
+plt.title("Muon Kinetic Energy as a function of the Material and Material Depth",
           size=25)
-ax1.set_xlabel(r"Distance (cm)", size=20)
+ax1.set_xlabel(r"Depth (cm)", size=20)
 ax1.set_ylabel(r"Kinetic Energy T (MeV)", size=20)
 ax1.tick_params(axis='both', labelsize=20)
 
