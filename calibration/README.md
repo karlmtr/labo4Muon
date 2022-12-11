@@ -2,12 +2,12 @@
 
 ## `linear_fits.py`
 
-The script has  the data folder as first parameter, and the number of the PMT as a second one. It will look for files with the  following pattern : `pmt<numberPMT>_<voltage>.txt`
+The script has the data folder as first parameter, and the number of the PMT as a second one. It will look for files with the  following pattern : `pmt<numberPMT>_<voltage>.txt`
 The script will create an image in the current directory. 
 
-## `histograms.py`
+## `histograms.py`
 
-Will plot all the distributions of the ADC count with the folder `donnee/` (for now, it's  hardcoded, but should not)
+Will plot all the distributions of the ADC count within the folder `donnee/` (for now, it's  hardcoded, but should not)
 
 ## `runCalibration.sh`
 
