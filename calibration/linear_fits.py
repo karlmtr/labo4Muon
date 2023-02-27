@@ -14,6 +14,7 @@ for file in filepaths:
     basename = os.path.basename(file)
     if f"pmt{sys.argv[2]}" in basename:
         data = np.loadtxt(file, unpack=True)
+        #data = data[data>200]
         averages.append(np.average(data))
         voltages.append(int(basename.split("_")[-1].split(".")[0])) # takes the voltage from the filename
 
@@ -21,7 +22,7 @@ if len(voltages) == 0:
     print("No file associated with this PMT found, exiting...")
     exit(1)
 
-# fit part 
+# fit part
 p = np.polyfit(voltages,averages,1)
 
 # plot part
@@ -35,4 +36,3 @@ ax.text(np.min(voltages)*1.04, np.max(averages)* (1-0.04), f"y={p[0]:.2E}x + {p[
 print(f"{sys.argv[2]},{p[0]},{p[1]}")
 plt.tight_layout()
 plt.savefig(f"PMT_{sys.argv[2]}.png")
-
