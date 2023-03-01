@@ -1,63 +1,40 @@
 import numpy as np
-
-def compute_otsu_criteria(im, th):
-    # create the thresholded image
-    thresholded_im = np.zeros(im.shape)
-    thresholded_im[im >= th] = 1
-
-    # compute weights
-    nb_pixels = im.size
-    nb_pixels1 = np.count_nonzero(thresholded_im)
-    weight1 = nb_pixels1 / nb_pixels
-    weight0 = 1 - weight1
-
-    # if one the classes is empty, eg all pixels are below or above the threshold, that threshold will not be considered
-    # in the search for the best threshold
-    if weight1 == 0 or weight0 == 0:
-        return np.inf
-
-    # find all pixels belonging to each class
-    val_pixels1 = im[thresholded_im == 1]
-    val_pixels0 = im[thresholded_im == 0]
-
-    # compute variance of these classes
-    var0 = np.var(val_pixels0) if len(val_pixels0) > 0 else 0
-    var1 = np.var(val_pixels1) if len(val_pixels1) > 0 else 0
-
-    return weight0 * var0 + weight1 * var1
+from copy import copy
 
 
 def get_means(x):
 
-    hist, bin_edges = np.histogram(data, bins=np.arange(MIN_ADC_VALUE, MAX_ADC_VALUE, 1))
+    x_ = copy(x)
+    #x_[np.isnan(x)] = 0
+    # calculate inter class variances
+    inter_vars = []
+    mus_0 = []
+    mus_1 = []
+    for t in range(1, len(x_)-1):
+        w_0 = np.sum(x_[:t])
+        w_1 = np.sum(x_[t:])
+        
+        if ((not  w_1) and (not  w_0)):
+            raise ValueError
+        elif ((not w_1) or (not w_0)):
+            mus_0.append(0.)
+            mus_1.append(0.)
+            inter_vars.append(0.)
+        else:
+            mu_0 = np.sum(np.arange(1, t+1)*x_[:t]) / w_0
+            mu_1 = np.sum(np.arange(t+1, len(x_)+1)*x_[t:]) / w_1
+            mus_0.append(mu_0)
+            mus_1.append(mu_1)
+            
+            inter_var = w_0 * w_1 * (mu_0-mu_1)**2
+            inter_vars.append(inter_var)
+     
+    
+    # find the max of inter class variance
+    ind_max = inter_vars.index(max(inter_vars))
+    ind_mu_0 = int(mus_0[ind_max])
+    ind_mu_1 = int(mus_1[ind_max])
+  
+    return ind_mu_0, ind_mu_1, ind_max
 
-    for t in range(MIN_ADC_VALUE, MAX_ADC_VALUE, 1):
 
-        # compute thresholded data
-        thresholded_data = np.zeros(x.shape)
-        thresholded_data[thresholded_data > t] = 1
-
-        # compute weight
-        nb_bins = x.size
-        nb_pixels1 = np.count_nonzero(thresholded_data)
-        weight1 = nb_pixels1 / nb_pixels
-        weight0 = 1 - weight1
-
-
-
-
-im = # load your image as a numpy array.
-# For testing purposes, one can use for example im = np.random.randint(0,255, size = (50,50))
-
-# testing all thresholds from 0 to the maximum of the image
-threshold_range = range(np.max(im)+1)
-criterias = [compute_otsu_criteria(im, th) for th in threshold_range]
-
-# best threshold is the one minimizing the Otsu criteria
-best_threshold = threshold_range[np.argmin(criterias)]
-
-
-folder_path = "/home/hibu60/Documents/unif/unifUNIGE/lab_physics_IV/this_data/"
-file = 'pmt1_2053v_threshold_50mv'
-X = np.loadtxt(folder_path + file)
-X = X.reshape(-1, 1)
