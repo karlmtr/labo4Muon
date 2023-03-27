@@ -51,7 +51,8 @@ def nbEvents_for_combinedPMTs(df:pd.DataFrame):
 
     """
     # events that make sense ?
-    wanted_events = [192,224, 240, 248, 252, 254, 255]
+    event_types = [192,224, 240, 248, 252, 254, 255]
+    chosen_event = event_types[-1]
     # af = df[(df["trigger"] == 192) |
     #         (df["trigger"] == 224) |
     #         (df["trigger"] == 240) |
@@ -60,16 +61,16 @@ def nbEvents_for_combinedPMTs(df:pd.DataFrame):
     #         (df["trigger"] == 254) |
     #         (df["trigger"] == 255) 
     #         ]
-    nbs = [len(df[df["trigger"] == nb]) for nb in wanted_events] 
+    nbs = [len(df[df["trigger"] == nb]) for nb in event_types] 
     
-    df = df[df["trigger"] == 255 ] # on choisit le 
+    df = df[df["trigger"] == event_types[-1]] # We choose the event type for the ADC distribution.
     for pmtName in pmtValues: 
         fig,ax = plt.subplots()
         ax.hist(df[pmtName], bins=300, range=[0,1300])
-        ax.set(xlabel="ADC", ylabel="# events", title=f"ADC distribution for {pmtName.upper()}")
+        ax.set(xlabel="ADC", ylabel="# events", title=f"ADC distrib for {pmtName.upper()} and event type {chosen_event} ")
         # plt.show()
-        plt.savefig(pathlib.Path(f"../pictures/{pmtName}_adc_distrib.png"))
-    print(f"Wanted events\t{wanted_events}")
+        plt.savefig(pathlib.Path(f"../pictures/{pmtName}_ET{chosen_event}_adc_distrib.png"))
+    print(f"Wanted events\t{event_types}")
     print(f"# events\t{nbs}")
 
 
