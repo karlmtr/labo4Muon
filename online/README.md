@@ -6,7 +6,7 @@ All files in the `online/` are mandatory to compile the main code.
 
 The compilation can be done in only one step : 
 ```console
-g++ -o main main.c crate_lib.c -lpthread
+g++ -o main main.c crate_lib.c kbhit.c -lpthread
 ```
 Once the compilation is done, one can run the code  : 
 ```console
